@@ -8,7 +8,12 @@ import Image from "next/image";
 const Navbar: FC = () => {
 	return (
 		<nav className="flex p-4 h-32 bg-stone-200 items-center">
-			<div className="flex items-center justify-center relative w-48 h-full">
+			<a
+				className="flex items-center justify-center relative w-48 h-full"
+				href="https://www.instagram.com/sataa_diarra?igsh=MXQwMzgwOWFmcjBiaw%3D%3D"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
 				<Image
 					className="contrast-150"
 					src="/images/logo.png"
@@ -16,17 +21,28 @@ const Navbar: FC = () => {
 					width={200}
 					height={100}
 				/>
-			</div>
+			</a>
 			<div className="flex justify-end items-center gap-5 ml-auto">
-				<div className="h-5 w-5 text-stone-500 hover:text-stone-800">
+				<a
+					className="h-5 w-5 text-stone-500 hover:text-stone-800"
+					href="#FeaturedCards"
+				>
 					<CakeIcon />
-				</div>
-				<div className="h-5 w-5 text-stone-500 hover:text-stone-800">
+				</a>
+				<a
+					className="h-5 w-5 text-stone-500 hover:text-stone-800"
+					href="#ContactForm"
+				>
 					<GmailIcon />
-				</div>
-				<div className="h-5 w-5 text-stone-500 hover:text-stone-800">
+				</a>
+				<a
+					className="h-5 w-5 text-stone-500 hover:text-stone-800"
+					href="https://www.instagram.com/sataa_diarra?igsh=MXQwMzgwOWFmcjBiaw%3D%3D"
+					target="_blank"
+					rel="noopener noreferrer"
+				>
 					<InstagramIcon />
-				</div>
+				</a>
 			</div>
 		</nav>
 	);

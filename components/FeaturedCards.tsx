@@ -13,34 +13,10 @@ interface FeaturedItem {
 
 const featured: FeaturedItem[] = data.slice(0, 3);
 
-// const featured: FeaturedItem[] = [
-// 	{
-// 		id: 1,
-// 		title: "Frisson tropical",
-// 		description: "Gourmandise irrésistible",
-// 		ingredients: "farine, sucre, beurre, oeufs, passion, mangue",
-// 		src: "/images/feat2-nobg.png",
-// 	},
-// 	{
-// 		id: 2,
-// 		title: "Macarons",
-// 		description: "Un délice coloré",
-// 		ingredients: "farine, sucre, beurre, oeufs, sucre, beurre, oeufs",
-// 		src: "/images/feat3-nobg.png",
-// 	},
-// 	{
-// 		id: 3,
-// 		title: "Galette des rois",
-// 		description: "Un classique fait maison",
-// 		ingredients: "farine, sucre, beurre, oeufs",
-// 		src: "/images/feat1-nobg.png",
-// 	},
-// ];
-
 const FeaturedCards: FC = () => {
 	return (
 		// <section className="px-4 py-12 bg-stone-300">
-		<section className="px-4 py-12 bg-sataa/20">
+		<section className="px-4 py-12 bg-sataa/20" id="FeaturedCards">
 			<h2 className="text-2xl font-bold mb-2 text-stone-600/90 text-center">
 				{/* <h2 className="text-2xl font-bold mb-2 text-stone-100/90 text-center"> */}
 				Tout chaud tout frais

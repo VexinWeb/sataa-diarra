@@ -18,20 +18,14 @@ const delicacies: Delicacy[] = data.slice(3);
 const Delicacies: FC = () => {
 	const [showAll, setShowAll] = useState<boolean>(false);
 
-	// // Exemple de données : ici 12 cartes
-	// const delicacies: Delicacy[] = Array.from({ length: 12 }, (_, i) => ({
-	// 	id: i + 1,
-	// 	title: `Délice ${i + 1}`,
-	// }));
-
 	return (
 		<section className="px-4 py-12">
 			<div
 				className="bg-stone-100/100 text-center cursor-pointer p-12 border rounded-3xl shadow-sm"
 				onClick={() => setShowAll((prev) => !prev)}
 			>
-				<h2 className="text-lg text-stone-600/90 font-bold">
-					Voir toutes les pâtisseries
+				<h2 className="text-2xl text-stone-600/90 font-bold">
+					{showAll ? "Moins de pâtisseries" : "Plus de pâtisseries"}
 				</h2>
 				<p className="text text-stone-500/90 text-center">
 					Les douceurs 4 saisons
