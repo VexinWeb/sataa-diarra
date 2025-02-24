@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const Footer: FC = () => {
 	return (
-		<footer className="flex p-4 h-32 bg-stone-200 justify-between items-center">
+		<footer className="flex p-4 h-32 bg-stone-200 justify-between items-center max-w-[1800px] mx-auto">
 			<a
 				className="text-xs text-stone-600"
 				href="https://www.instagram.com/sataa_diarra?igsh=MXQwMzgwOWFmcjBiaw%3D%3D"
@@ -27,7 +27,7 @@ const Footer: FC = () => {
 				<div>
 					<Image
 						className=""
-						src="/images/vexinweb.png"
+						src="/logo/vexinweb.png"
 						alt="Logo VexinWEB"
 						width={30}
 						height={30}
