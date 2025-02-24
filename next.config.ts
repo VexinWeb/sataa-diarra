@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
 	// Ajoutez d'autres options de configuration ici si nécessaire
 	eslint: {
 		// Désactive ESLint pendant les builds de production
-		ignoreDuringBuilds: true,
+		ignoreDuringBuilds: false,
 	},
 };
 
