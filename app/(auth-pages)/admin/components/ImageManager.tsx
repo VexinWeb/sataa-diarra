@@ -82,8 +82,8 @@ const ImageManager = () => {
 				const ctx = canvas.getContext("2d");
 
 				// Dimensions maximales
-				const maxWidth = 1000;
-				const maxHeight = 1000;
+				const maxWidth = 800;
+				const maxHeight = 800;
 
 				let width = img.width;
 				let height = img.height;
@@ -101,13 +101,19 @@ const ImageManager = () => {
 				canvas.toBlob(
 					(blob) => {
 						if (blob) {
-							resolve(blob);
+							// On compare les tailles et on garde la plus petite
+							if (blob.size > file.size) {
+								resolve(file);
+							} else {
+								resolve(blob);
+							}
 						} else {
 							reject(new Error("Échec de l'optimisation"));
 						}
 					},
-					file.type, // Conserve le format d'origine
-					0.9
+					// file.type, // Conserve le format d'origine
+					"image/png",
+					0.7
 				);
 			};
 		});
@@ -116,6 +122,13 @@ const ImageManager = () => {
 	const handleImageUpload = async (event: ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];
 		if (!file) return;
+
+		// Ajout des logs
+		console.log("Détails de l'image:", {
+			taille: file.size,
+			type: file.type,
+			nom: file.name,
+		});
 		console.log("Fichier sélectionné:", file);
 
 		if (!fileName.trim()) {
@@ -225,17 +238,19 @@ const ImageManager = () => {
 							className="rounded-lg w-full"
 						/>
 						<p className="mt-2 text-sm text-stone-600">{file.name}</p>
-						<p
-							className="mt-1 text-xs text-stone-500 break-all cursor-pointer hover:text-stone-700"
+
+						<button
 							onClick={() => copyToClipboard(file.publicUrl || "")}
+							className="mt-6 bg-gray-500 hover:bg-gray-900 text-white px-3 py-2 text-sm w-full"
 						>
-							{file.publicUrl}
-						</p>
+							Copier l'URL
+						</button>
+
 						<button
 							onClick={() => deleteImage(file.name)}
 							className="mt-6 bg-red-500 text-white w-full px-3 py-2 rounded-lg text-sm hover:bg-red-600"
 						>
-							Supprimer
+							Supprimer l'image
 						</button>
 					</div>
 				))}

@@ -45,7 +45,7 @@ const FeaturedsClient: FC<FeaturedsClientProps> = ({ products }) => {
 								setSelectedCard(selectedCard === item.id ? null : item.id)
 							}
 						>
-							<div className="flex flex-col justify-center w-full">
+							<div className="flex flex-col justify-center w-full px-2">
 								<h3 className="text-lg font-semibold text-sataa pb-1">
 									{item.title}
 								</h3>
@@ -79,13 +79,17 @@ const FeaturedsClient: FC<FeaturedsClientProps> = ({ products }) => {
 									</div>
 								)}
 							</div>
-
-							<div className="relative flex items-center pl-4">
+							<div className="relative flex items-center w-full">
 								<Image
 									src={item.image}
 									alt="Featured item"
-									width={150}
-									height={150}
+									width={200}
+									height={200}
+									style={{
+										height: "160px",
+										width: "160px",
+										objectFit: "cover",
+									}}
 								/>
 								{selectedCard === item.id && (
 									<div className="text-xs text-stone-600 absolute top-0 right-0 bg-white/90  shadow-sm p-3 h-10 w-10 rounded-full flex items-center justify-center">

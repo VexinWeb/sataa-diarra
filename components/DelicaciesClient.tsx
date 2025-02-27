@@ -24,9 +24,9 @@ const DelicaciesClient: FC<DelicaciesClientProps> = ({ products }) => {
 	const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
 	return (
-		<section className="px-4 py-6 mt-12 max-w-[1800px] mx-auto">
+		<section className="py-8 px-4 max-w-[1800px] mx-auto">
 			<div
-				className="bg-stone-100/100 text-center cursor-pointer p-6 border rounded-3xl shadow-sm max-w-lg mx-auto"
+				className="bg-stone-100/100 text-center cursor-pointer p-6 border rounded-3xl shadow-sm"
 				onClick={() => setShowCards((prev) => !prev)}
 			>
 				<h2 className="text-2xl text-stone-600/90 font-bold">

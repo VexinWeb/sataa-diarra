@@ -290,7 +290,7 @@ const ProductManager = () => {
 											}}
 											className="rounded-lg"
 										/>
-										<p className="mt-2 text-sm text-stone-600">
+										<p className="mt-6 text-sm text-stone-600">
 											<strong>Titre : </strong>
 											{product.title}
 										</p>
@@ -356,7 +356,7 @@ const ProductManager = () => {
 															behavior: "smooth",
 														});
 													}}
-													className="bg-gray-600 hover:bg-gray-900 text-white px-3 py-2 mt-6 w-full"
+													className="bg-gray-500 hover:bg-gray-900 text-white text-sm px-3 py-2 mt-6 w-full"
 												>
 													Modifier
 												</button>
