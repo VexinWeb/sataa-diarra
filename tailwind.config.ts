@@ -72,11 +72,19 @@ const config = {
 					"0%": { opacity: "0" },
 					"100%": { opacity: "1" },
 				},
+				slideInDown: {
+					"0%": { transform: "translateY(-50%)", opacity: "0" },
+					"100%": { transform: "translateY(0)", opacity: "1" },
+				},
 			},
 			animation: {
 				"accordion-down": "accordion-down 0.2s ease-out",
 				"accordion-up": "accordion-up 0.2s ease-out",
-				fadeIn: "fadeIn 1s ease-in-out",
+				fadeIn: "fadeIn .6s ease-in-out",
+				slideInDown: "slideInDown 1s ease-out",
+			},
+			transitionProperty: {
+				"max-height": "max-height",
 			},
 		},
 	},

@@ -5,10 +5,8 @@ import DelicaciesClient from "@/components/DelicaciesClient";
 import Custom from "@/components/Custom";
 import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
-
 import { redirect } from "next/navigation";
 import { createClient } from "@/app/lib/server";
-import Delicacies from "@/components/DelicaciesClient";
 
 export default async function Home() {
 	const supabase = await createClient();
@@ -31,16 +29,6 @@ export default async function Home() {
 
 	return (
 		<main className="">
-			{/* <h1>Produits</h1>
-			{products?.map((p) => (
-				<div key={p.id}>
-					<h2>{p.title}</h2>
-					<p>{p.description}</p>
-					<div className="relaztive w-24 h-24 flex mb-4">
-						<Image src={p.image} alt="Featured item" width={150} height={150} />
-					</div>
-				</div>
-			))} */}
 			<Navbar />
 			<HeroClient products={heroProduct} />
 			<FeaturedsClient products={featuredsProducts} />
