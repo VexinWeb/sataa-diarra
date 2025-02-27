@@ -26,11 +26,14 @@ const Footer: FC = () => {
 				<div className="">Site réalisé par </div>
 				<div>
 					<Image
-						className=""
 						src="/logo/vexinweb.png"
 						alt="Logo VexinWEB"
 						width={30}
 						height={30}
+						style={{
+							height: "30px",
+							width: "30px",
+						}}
 					/>
 				</div>
 			</a>
