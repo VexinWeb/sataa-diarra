@@ -1,11 +1,95 @@
 "use client";
-// components/ContactForm.tsx
-import { FC, FormEvent } from "react";
+import { FC, useState, useEffect } from "react";
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
+import Select, { StylesConfig } from "react-select";
+
+interface FormData {
+	name: string;
+	email: string;
+	phone?: string;
+	subject: string;
+	message: string;
+}
+
+const subjectOptions = [
+	{ value: "commande", label: "Commander une pâtisserie" },
+	{ value: "devis", label: "Obtenir un devis personnalisé" },
+	{ value: "info", label: "Renseignements et disponibilités" },
+] as const;
+
+type SubjectOption = (typeof subjectOptions)[number];
+
+const validationSchema = Yup.object<FormData>({
+	name: Yup.string().required("Votre nom est requis"),
+	email: Yup.string()
+		.email("Email invalide")
+		.required("Votre email est requis"),
+	phone: Yup.string().optional(),
+	subject: Yup.string().required("Merci de sélectionner un sujet"),
+	message: Yup.string().required("Votre message est requis"),
+});
+
+const customStyles: StylesConfig<SubjectOption, false> = {
+	control: (provided, state) => ({
+		...provided,
+		cursor: "pointer", // Ajoute le curseur pointer au contrôle
+		// border: "none",
+		padding: ".5rem",
+		backgroundColor: "white",
+		borderRadius: "0.75rem",
+		color: "#999",
+		border: state.isFocused ? "1px solid #a8a29e" : "1px solid #e5e7eb", // Bordure stone-400 en focus
+		boxShadow: state.isFocused ? "0 0 0 2px rgba(168, 162, 158, 0.3)" : "none", // Équivalent au ring
+		transition: "all 0.2s ease",
+		"&:hover": {
+			borderColor: "#a8a29e", // stone-400
+		},
+	}),
+	placeholder: (provided) => ({
+		...provided,
+		color: "#999",
+	}),
+	singleValue: (provided) => ({
+		...provided,
+		color: "#999",
+	}),
+	option: (provided, state) => ({
+		...provided,
+		cursor: "pointer", // Ajoute le curseur pointer au contrôle
+		backgroundColor: state.isSelected ? "#f2f2f2" : "white",
+		color: state.isSelected ? "#333" : "#666",
+		"&:hover": {
+			backgroundColor: "#e0e0e0",
+		},
+	}),
+	menu: (provided) => ({
+		...provided,
+		cursor: "pointer", // Ajoute le curseur pointer au contrôle
+		borderRadius: "0.75rem",
+		boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+		marginTop: "5px", // Espacement entre l'input et le menu
+	}),
+	menuList: (provided) => ({
+		...provided,
+		borderRadius: "0.75rem", // Assure-toi que c'est la même valeur que pour le menu
+		padding: "4px", // Un peu de padding interne
+	}),
+};
 
 const ContactForm: FC = () => {
-	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		// Implémente ici la logique d'envoi du formulaire
+	const [isMounted, setIsMounted] = useState(false);
+
+	useEffect(() => {
+		setIsMounted(true);
+	}, []);
+
+	const initialValues: FormData = {
+		name: "",
+		email: "",
+		phone: "",
+		subject: "",
+		message: "",
 	};
 
 	return (
@@ -20,62 +104,104 @@ const ContactForm: FC = () => {
 				<p className="mb-4 text-lg text-stone-500/90 text-center">
 					Pour réserver votre pâtisserie
 				</p>
-				<form
-					className="flex flex-col gap-4 max-w-lg mx-auto"
-					onSubmit={handleSubmit}
+
+				<Formik
+					initialValues={initialValues}
+					validationSchema={validationSchema}
+					onSubmit={(values) => {
+						console.log(values);
+						// Ici viendra la logique d'envoi avec EmailJS
+					}}
 				>
-					<div className="flex flex-col gap-2">
-						<label htmlFor="name" className="font-medium">
-							{/* Prénom & nom */}
-						</label>
-						<input
-							type="text"
-							id="name"
-							className="p-4 border rounded-xl"
-							placeholder="Votre nom"
-						/>
-					</div>
-					<div className="flex flex-col gap-2">
-						<label htmlFor="email" className="font-medium">
-							{/* Email */}
-						</label>
-						<input
-							type="email"
-							id="email"
-							className="p-4 border rounded-xl"
-							placeholder="Votre email"
-						/>
-					</div>
-					<div className="flex flex-col gap-2">
-						<label htmlFor="phone" className="font-medium">
-							{/* Téléphone */}
-						</label>
-						<input
-							type="tel"
-							id="phone"
-							className="p-4 border rounded-xl"
-							placeholder="Votre téléphone (facultatif)"
-						/>
-					</div>
-					<div className="flex flex-col gap-2">
-						<label htmlFor="message" className="font-medium">
-							{/* Réserver une pâtisserie */}
-						</label>
-						<textarea
-							id="message"
-							className="p-4 border rounded-xl"
-							placeholder="Votre message"
-							rows={4}
-						></textarea>
-					</div>
-					<button
-						type="submit"
-						// className="bg-stone-500 text-stone-100 font-bold my-4 p-5 border-none shadow-sm justify-between w-full"
-						className="bg-stone-500/90 text-stone-100 font-bold my-4 p-5 border-stone-500 rounded-xl shadow-sm justify-between w-full"
-					>
-						Envoyer
-					</button>
-				</form>
+					{({
+						errors,
+						touched,
+						setFieldValue,
+						setFieldTouched,
+						validateField,
+					}) => (
+						<Form className="flex flex-col gap-4 max-w-lg mx-auto">
+							<div className="flex flex-col gap-2">
+								<Field
+									name="name"
+									type="text"
+									placeholder="Votre nom"
+									className="p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 transition-all"
+								/>
+								{errors.name && touched.name && (
+									<div className="text-red-500 text-sm  pl-4">
+										{errors.name}
+									</div>
+								)}
+							</div>
+							<div className="flex flex-col gap-2">
+								<Field
+									name="email"
+									type="email"
+									placeholder="Votre email"
+									className="p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 transition-all"
+								/>
+								{errors.email && touched.email && (
+									<div className="text-red-500 text-sm pl-4">
+										{errors.email}
+									</div>
+								)}
+							</div>
+							<div className="flex flex-col gap-2">
+								<Field
+									name="phone"
+									type="tel"
+									placeholder="Votre téléphone (facultatif)"
+									className="p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 transition-all"
+								/>
+								{errors.phone && touched.phone && (
+									<div className="text-red-500 text-sm">{errors.phone}</div>
+								)}
+							</div>
+							<div className="flex flex-col gap-2">
+								{isMounted && (
+									<Select
+										instanceId="subject-select"
+										options={subjectOptions}
+										placeholder="Sélectionnez un sujet"
+										styles={customStyles}
+										onChange={(option) => {
+											setFieldValue("subject", option?.value);
+											setFieldTouched("subject", true, true);
+											setTimeout(() => validateField("subject"), 100);
+										}}
+										onBlur={() => setFieldTouched("subject", true)}
+										className="rounded-xl"
+									/>
+								)}
+								{errors.subject && touched.subject && (
+									<div className="text-red-500 text-sm">{errors.subject}</div>
+								)}
+							</div>
+							<div className="flex flex-col gap-2">
+								<Field
+									as="textarea"
+									name="message"
+									placeholder="Votre message"
+									rows={4}
+									className="p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 transition-all"
+								/>
+								{errors.message && touched.message && (
+									<div className="text-red-500 text-sm pl-4">
+										{errors.message}
+									</div>
+								)}
+							</div>
+
+							<button
+								type="submit"
+								className="bg-stone-500/90 text-stone-100 font-bold my-4 p-5 border-stone-500 rounded-xl shadow-sm justify-between w-full"
+							>
+								Envoyer
+							</button>
+						</Form>
+					)}
+				</Formik>
 			</div>
 		</section>
 	);

@@ -3,12 +3,16 @@
 import { createClient } from "@/utils/supabase/client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { Formik, Form, Field, FormikHelpers } from "formik";
+import * as Yup from "yup";
+import Select from "react-select";
 
+// Interface pour le produit tel qu'il est stocké en base de données
 interface Product {
 	id: number;
 	title: string;
 	type: string;
-	price: number;
+	price: number; // price est un number en base de données
 	description: string;
 	flavors: string;
 	ingredients: string;
@@ -17,22 +21,88 @@ interface Product {
 	created_at: string;
 }
 
+// Interface pour le produit dans le formulaire
+interface ProductFormValues {
+	id: number;
+	title: string;
+	type: string;
+	price: string; // price est un string dans le formulaire
+	description: string;
+	flavors: string;
+	ingredients: string;
+	allergens: string;
+	image: string;
+}
+
+const typeOptions = [
+	{ value: "", label: "Pâtisseries non affichées" },
+	{ value: "hero", label: "La pâtisserie en haut de page" },
+	{ value: "star", label: "Les pâtisseries du moment" },
+	{ value: "all", label: "Toutes les autres pâtisseries" },
+];
+
+const ProductSchema = Yup.object().shape({
+	title: Yup.string().required("Le titre est requis"),
+	type: Yup.string().required("Le type est requis"),
+	price: Yup.string().required("Le prix est requis"),
+	description: Yup.string().required("La description est requise"),
+	ingredients: Yup.string().required("Les ingrédients sont requis"),
+	image: Yup.string().required("L'URL de l'image est requise"),
+	// Champs optionnels
+	flavors: Yup.string(),
+	allergens: Yup.string(),
+});
+
+const customStyles = {
+	control: (provided: any, state: { isFocused: boolean }) => ({
+		...provided,
+		cursor: "pointer",
+		padding: ".5rem",
+		backgroundColor: "white",
+		color: "#666",
+		border: state.isFocused ? "1px solid #a8a29e" : "1px solid #e5e7eb",
+		boxShadow: state.isFocused ? "0 0 0 2px rgba(168, 162, 158, 0.3)" : "none",
+		transition: "all 0.2s ease",
+		"&:hover": {
+			borderColor: "#a8a29e",
+		},
+	}),
+	placeholder: (provided: any) => ({
+		...provided,
+		color: "#999",
+	}),
+	singleValue: (provided: any) => ({
+		...provided,
+		color: "#666",
+	}),
+	menu: (provided: any) => ({
+		...provided,
+		cursor: "pointer",
+		boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+		marginTop: "5px",
+	}),
+	menuList: (provided: any) => ({
+		...provided,
+		padding: "4px",
+	}),
+	option: (provided: any, state: { isSelected: boolean }) => ({
+		...provided,
+		cursor: "pointer",
+		backgroundColor: state.isSelected ? "#f2f2f2" : "white",
+		color: state.isSelected ? "#333" : "#666",
+		"&:hover": {
+			backgroundColor: "#e0e0e0",
+		},
+	}),
+};
+
 const ProductManager = () => {
 	const [products, setProducts] = useState<Product[]>([]);
 	const [selectedProduct, setSelectedProduct] = useState<number | null>(null);
 	const [showAddForm, setShowAddForm] = useState(false);
-	const [newProduct, setNewProduct] = useState({
-		id: 0,
-		title: "",
-		type: "",
-		price: "",
-		description: "",
-		flavors: "",
-		ingredients: "",
-		allergens: "",
-		image: "",
-	});
+	const [editingProduct, setEditingProduct] = useState<null | Product>(null);
 	const [productTypes, setProductTypes] = useState<string[]>([]);
+	const [isMounted, setIsMounted] = useState(false);
 
 	const supabase = createClient();
 
@@ -45,8 +115,18 @@ const ProductManager = () => {
 		if (data) setProducts(data);
 	};
 
-	const addProduct = async () => {
-		const { id, ...productWithoutId } = newProduct; // On exclut l'id
+	const addProduct = async (
+		formValues: ProductFormValues,
+		formikHelpers: FormikHelpers<ProductFormValues>
+	) => {
+		// Convertir ProductFormValues en Product (sans id ni created_at)
+		const productToAdd = {
+			...formValues,
+			price: parseFloat(formValues.price),
+		};
+
+		const { id, ...productWithoutId } = productToAdd;
+
 		const { data, error } = await supabase
 			.from("products")
 			.insert([productWithoutId])
@@ -59,6 +139,7 @@ const ProductManager = () => {
 
 		fetchProducts();
 		setShowAddForm(false);
+		formikHelpers.resetForm();
 	};
 
 	const deleteProduct = async (id: number) => {
@@ -79,31 +160,30 @@ const ProductManager = () => {
 		}
 	};
 
-	const updateProduct = async (productId: number) => {
-		const supabase = createClient();
+	const updateProduct = async (
+		formValues: ProductFormValues,
+		formikHelpers: FormikHelpers<ProductFormValues>
+	) => {
+		// Convertir ProductFormValues en Product
+		const productToUpdate = {
+			...formValues,
+			price: parseFloat(formValues.price),
+		};
+
 		const { error } = await supabase
 			.from("products")
-			.update({
-				title: newProduct.title,
-				description: newProduct.description,
-				type: newProduct.type,
-				flavors: newProduct.flavors,
-				ingredients: newProduct.ingredients,
-				allergens: newProduct.allergens,
-				price: newProduct.price.toString(),
-				// price: newProduct.price,
-				image: newProduct.image,
-			})
-			.eq("id", productId);
+			.update(productToUpdate)
+			.eq("id", formValues.id);
 
-		if (!error) {
-			// Rafraîchir la liste des produits
-			fetchProducts();
-			setSelectedProduct(null);
+		if (error) {
+			console.error("Erreur lors de la mise à jour:", error);
+			return;
 		}
 
 		fetchProducts();
-		setShowAddForm(false); // Ferme le formulaire
+		setShowAddForm(false);
+		setEditingProduct(null);
+		formikHelpers.resetForm();
 	};
 
 	type ProductTypes = "" | "hero" | "star" | "all";
@@ -123,6 +203,7 @@ const ProductManager = () => {
 	};
 
 	useEffect(() => {
+		setIsMounted(true);
 		const fetchTypes = async () => {
 			const { data } = await supabase.from("products").select("type");
 
@@ -145,118 +226,205 @@ const ProductManager = () => {
 				{!showAddForm && (
 					<button
 						onClick={() => setShowAddForm(true)}
-						className="bg-gray-600 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded-lg w-full sm:w-96"
+						className="bg-gray-600 hover:bg-gray-900 text-white font-bold py-3 px-4 rounded-lg w-full sm:w-96"
 					>
 						Ajouter un produit
 					</button>
 				)}
 				{showAddForm && (
-					<div className="mt-4 p-4 border rounded-lg w-full sm:w-96">
-						<input
-							type="text"
-							placeholder="Titre"
-							value={newProduct.title}
-							onChange={(e) =>
-								setNewProduct({ ...newProduct, title: e.target.value })
+					<div className="mt-4 p-4 border rounded-lg w-full max-w-xl mx-auto">
+						<Formik
+							initialValues={
+								editingProduct
+									? {
+											id: editingProduct.id,
+											title: editingProduct.title,
+											type: editingProduct.type,
+											price: editingProduct.price.toString(), // Convertir number en string
+											description: editingProduct.description,
+											flavors: editingProduct.flavors,
+											ingredients: editingProduct.ingredients,
+											allergens: editingProduct.allergens,
+											image: editingProduct.image,
+										}
+									: {
+											id: 0,
+											title: "",
+											type: "",
+											price: "",
+											description: "",
+											flavors: "",
+											ingredients: "",
+											allergens: "",
+											image: "",
+										}
 							}
-							className="w-full p-2 mb-2 border rounded"
-						/>
-						<select
-							value={newProduct.type}
-							onChange={(e) =>
-								setNewProduct({ ...newProduct, type: e.target.value })
-							}
-							className="w-full p-2 mb-2 border rounded text-stone-600 pr-8"
-						>
-							<option value="" className="text-stone-400">
-								Sélectionner un type
-							</option>
-							{Object.entries(typeLabels).map(([value, label]) => (
-								<option key={value} value={value}>
-									{label}
-								</option>
-							))}
-						</select>
-						<input
-							type="number"
-							placeholder="Prix"
-							value={newProduct.price}
-							onChange={(e) =>
-								setNewProduct({ ...newProduct, price: e.target.value })
-							}
-							className="w-full p-2 mb-2 border rounded"
-						/>
-						<textarea
-							placeholder="Description"
-							value={newProduct.description}
-							onChange={(e) =>
-								setNewProduct({ ...newProduct, description: e.target.value })
-							}
-							className="w-full p-2 mb-2 border rounded"
-						/>
-						<textarea
-							placeholder="Parfums"
-							value={newProduct.flavors}
-							onChange={(e) =>
-								setNewProduct({ ...newProduct, flavors: e.target.value })
-							}
-							className="w-full p-2 mb-2 border rounded"
-						/>
-						<textarea
-							placeholder="Ingrédients"
-							value={newProduct.ingredients}
-							onChange={(e) =>
-								setNewProduct({ ...newProduct, ingredients: e.target.value })
-							}
-							className="w-full p-2 mb-2 border rounded"
-						/>
-						<textarea
-							placeholder="Allergènes"
-							value={newProduct.allergens}
-							onChange={(e) =>
-								setNewProduct({ ...newProduct, allergens: e.target.value })
-							}
-							className="w-full p-2 mb-2 border rounded"
-						/>
-						<input
-							type="text"
-							placeholder="URL de l'image"
-							value={newProduct.image}
-							onChange={(e) =>
-								setNewProduct({ ...newProduct, image: e.target.value })
-							}
-							className="w-full p-2 mb-2 border rounded"
-						/>
-						<button
-							onClick={(e) => {
-								// Interesting: e.preventDefault() is used to prevent the form from being submitted
-								e.preventDefault();
-								// Interesting: newProduct.id is used to determine if the product is new or not
-								newProduct.id ? updateProduct(newProduct.id) : addProduct();
+							validationSchema={ProductSchema}
+							onSubmit={(
+								values: ProductFormValues,
+								formikHelpers: FormikHelpers<ProductFormValues>
+							) => {
+								if (editingProduct) {
+									updateProduct(values, formikHelpers);
+								} else {
+									addProduct(values, formikHelpers);
+								}
 							}}
-							className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 w-full"
 						>
-							Enregistrer
-						</button>
-						<button
-							onClick={() => {
-								setShowAddForm(false);
-								setNewProduct({
-									id: 0,
-									title: "",
-									type: "",
-									price: "",
-									description: "",
-									flavors: "",
-									ingredients: "",
-									allergens: "",
-									image: "",
-								});
-							}}
-							className="bg-gray-600 hover:bg-gray-900 text-white font-bold py-2 px-4 w-full mt-2"
-						>
-							Annuler
-						</button>
+							{({
+								values,
+								errors,
+								touched,
+								handleChange,
+								handleBlur,
+								setFieldValue,
+								setFieldTouched,
+							}) => (
+								<Form className="space-y-4">
+									<div className="flex flex-col gap-2">
+										<Field
+											name="title"
+											type="text"
+											placeholder="Titre"
+											className="w-full p-4 border focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 transition-all"
+										/>
+										{errors.title && touched.title && (
+											<div className="text-red-500 text-sm pl-4">
+												{errors.title}
+											</div>
+										)}
+									</div>
+
+									<div className="flex flex-col gap-2">
+										{isMounted && (
+											<Select
+												instanceId="type-select"
+												options={typeOptions}
+												placeholder="Sélectionnez un type"
+												styles={customStyles}
+												value={typeOptions.find(
+													(option) => option.value === values.type
+												)}
+												onChange={(option) => {
+													setFieldValue("type", option?.value);
+													setFieldTouched("type", true, true);
+												}}
+												onBlur={() => setFieldTouched("type", true)}
+											/>
+										)}
+										{errors.type && touched.type && (
+											<div className="text-red-500 text-sm pl-4">
+												{errors.type}
+											</div>
+										)}
+									</div>
+
+									<div className="flex flex-col gap-2">
+										<Field
+											name="price"
+											type="number"
+											placeholder="Prix"
+											className="w-full p-4 border focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 transition-all"
+										/>
+										{errors.price && touched.price && (
+											<div className="text-red-500 text-sm pl-4">
+												{errors.price}
+											</div>
+										)}
+									</div>
+
+									<div className="flex flex-col gap-2">
+										<Field
+											as="textarea"
+											name="description"
+											placeholder="Description"
+											className="w-full p-4 border focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 transition-all"
+										/>
+										{errors.description && touched.description && (
+											<div className="text-red-500 text-sm pl-4">
+												{errors.description}
+											</div>
+										)}
+									</div>
+
+									<div className="flex flex-col gap-2">
+										<Field
+											as="textarea"
+											name="flavors"
+											placeholder="Parfums"
+											className="w-full p-4 border focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 transition-all"
+										/>
+										{errors.flavors && touched.flavors && (
+											<div className="text-red-500 text-sm pl-4">
+												{errors.flavors}
+											</div>
+										)}
+									</div>
+
+									<div className="flex flex-col gap-2">
+										<Field
+											as="textarea"
+											name="ingredients"
+											placeholder="Ingrédients"
+											className="w-full p-4 border focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 transition-all"
+										/>
+										{errors.ingredients && touched.ingredients && (
+											<div className="text-red-500 text-sm pl-4">
+												{errors.ingredients}
+											</div>
+										)}
+									</div>
+
+									<div className="flex flex-col gap-2">
+										<Field
+											as="textarea"
+											name="allergens"
+											placeholder="Allergènes"
+											className="w-full p-4 border focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 transition-all"
+										/>
+										{errors.allergens && touched.allergens && (
+											<div className="text-red-500 text-sm pl-4">
+												{errors.allergens}
+											</div>
+										)}
+									</div>
+
+									<div className="flex flex-col gap-2">
+										<Field
+											name="image"
+											type="text"
+											placeholder="URL de l'image"
+											className="w-full p-4 border focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 transition-all"
+										/>
+										{errors.image && touched.image && (
+											<div className="text-red-500 text-sm pl-4">
+												{errors.image}
+											</div>
+										)}
+									</div>
+
+									<div className="flex gap-2 pt-2">
+										<button
+											type="submit"
+											className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 w-full transition-all"
+										>
+											{editingProduct ? "Mettre à jour" : "Enregistrer"}
+										</button>
+
+										<button
+											type="button"
+											onClick={() => {
+												setShowAddForm(false);
+												setEditingProduct(null);
+											}}
+											className="bg-gray-600 hover:bg-gray-900 text-white font-bold py-3 px-4 w-full transition-all"
+										>
+											Annuler
+										</button>
+									</div>
+								</Form>
+							)}
+						</Formik>
 					</div>
 				)}
 			</div>
@@ -344,13 +512,10 @@ const ProductManager = () => {
 													)}
 												</p>
 												<button
-													onClick={() => {
-														setNewProduct({
-															...product,
-															price: product.price.toString(),
-														});
+													onClick={(e) => {
+														e.stopPropagation();
+														setEditingProduct(product);
 														setShowAddForm(true);
-														// Scroll vers le haut de la page
 														window.scrollTo({
 															top: 0,
 															behavior: "smooth",
