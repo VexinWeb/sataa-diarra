@@ -231,7 +231,7 @@ const ProductManager = () => {
 				{!showAddForm && (
 					<button
 						onClick={() => setShowAddForm(true)}
-						className="bg-gray-600 hover:bg-gray-900 text-white font-bold py-3 px-4 rounded-lg w-full sm:w-96"
+						className="bg-gray-600 hover:bg-gray-900 text-white font-bold py-3 px-4 rounded-lg w-full sm:w-96 cursor-pointer"
 					>
 						Ajouter un produit
 					</button>
@@ -415,7 +415,7 @@ const ProductManager = () => {
 									<div className="flex gap-2 pt-2">
 										<button
 											type="submit"
-											className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 w-full transition-all"
+											className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 w-full transition-all cursor-pointer"
 										>
 											{editingProduct ? "Mettre à jour" : "Enregistrer"}
 										</button>
@@ -426,7 +426,7 @@ const ProductManager = () => {
 												setShowAddForm(false);
 												setEditingProduct(null);
 											}}
-											className="bg-gray-600 hover:bg-gray-900 text-white font-bold py-3 px-4 w-full transition-all"
+											className="bg-gray-600 hover:bg-gray-900 text-white font-bold py-3 px-4 w-full transition-all cursor-pointer"
 										>
 											Annuler
 										</button>
@@ -530,7 +530,7 @@ const ProductManager = () => {
 															behavior: "smooth",
 														});
 													}}
-													className="bg-gray-500 hover:bg-gray-900 text-white text-sm px-3 py-2 mt-6 w-full"
+													className="bg-gray-500 hover:bg-gray-900 text-white text-sm px-3 py-2 mt-6 w-full cursor-pointer"
 												>
 													Modifier
 												</button>
@@ -540,7 +540,7 @@ const ProductManager = () => {
 														e.stopPropagation(); // Empêche le toggle du selectedProduct
 														deleteProduct(product.id);
 													}}
-													className="mt-6 bg-red-500 text-white w-full px-3 py-2 rounded-lg text-sm hover:bg-red-600"
+													className="mt-6 bg-red-500 text-white w-full px-3 py-2 rounded-lg text-sm hover:bg-red-600 cursor-pointer"
 												>
 													Supprimer
 												</button>

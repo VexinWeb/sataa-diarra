@@ -1,8 +1,9 @@
 "use client";
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useRef } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import Select, { StylesConfig } from "react-select";
+import emailjs from "@emailjs/browser";
 
 interface FormData {
 	name: string;
@@ -79,6 +80,12 @@ const customStyles: StylesConfig<SubjectOption, false> = {
 
 const ContactForm: FC = () => {
 	const [isMounted, setIsMounted] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [submitStatus, setSubmitStatus] = useState<{
+		success: boolean;
+		message: string;
+	} | null>(null);
+	const formRef = useRef<HTMLFormElement>(null);
 
 	useEffect(() => {
 		setIsMounted(true);
@@ -90,6 +97,59 @@ const ContactForm: FC = () => {
 		phone: "",
 		subject: "",
 		message: "",
+	};
+
+	const handleSubmit = async (
+		values: FormData,
+		{ resetForm }: { resetForm: () => void }
+	) => {
+		setIsSubmitting(true);
+		setSubmitStatus(null);
+
+		try {
+			// Remplacez ces valeurs par vos IDs EmailJS
+			const serviceId = "service_9yuhwis";
+			const templateId = "template_0asojaa";
+			const publicKey = "dyqOGcZNNcNTQ_ko8";
+
+			// Préparer les données pour l'envoi
+			// Convertir la valeur numérique du sujet en texte lisible
+			const subjectText =
+				subjectOptions.find((opt) => opt.value === values.subject)?.label ||
+				values.subject;
+
+			// Utiliser send au lieu de sendForm - pas besoin de formRef
+			const result = await emailjs.send(
+				serviceId,
+				templateId,
+				{
+					from_name: values.name,
+					from_email: values.email,
+					from_phone: values.phone || "Non renseigné",
+					subject: subjectText,
+					message: values.message,
+				},
+				publicKey
+			);
+
+			if (result.status === 200) {
+				setSubmitStatus({
+					success: true,
+					message:
+						"Votre message a bien été envoyé ! Nous vous répondrons dans les plus brefs délais.",
+				});
+				resetForm();
+			}
+		} catch (error) {
+			console.error("Erreur lors de l'envoi du message:", error);
+			setSubmitStatus({
+				success: false,
+				message:
+					"Une erreur est survenue lors de l'envoi du message. Veuillez réessayer ultérieurement.",
+			});
+		} finally {
+			setIsSubmitting(false);
+		}
 	};
 
 	return (
@@ -105,13 +165,23 @@ const ContactForm: FC = () => {
 					Pour réserver votre pâtisserie
 				</p>
 
+				{/* Ajoutez ceci après le paragraphe "Pour réserver votre pâtisserie" */}
+				{submitStatus && (
+					<div
+						className={`p-4 mb-6 rounded-xl text-center max-w-lg mx-auto ${
+							submitStatus.success
+								? "bg-green-500 text-white"
+								: "bg-red-500 text-white"
+						}`}
+					>
+						{submitStatus.message}
+					</div>
+				)}
+
 				<Formik
 					initialValues={initialValues}
 					validationSchema={validationSchema}
-					onSubmit={(values) => {
-						console.log(values);
-						// Ici viendra la logique d'envoi avec EmailJS
-					}}
+					onSubmit={handleSubmit}
 				>
 					{({
 						errors,
@@ -120,6 +190,7 @@ const ContactForm: FC = () => {
 						setFieldTouched,
 						validateField,
 					}) => (
+						// <Form className="flex flex-col gap-4 max-w-lg mx-auto">
 						<Form className="flex flex-col gap-4 max-w-lg mx-auto">
 							<div className="flex flex-col gap-2">
 								<Field

@@ -293,14 +293,14 @@ const ImageManager = () => {
 
 						<button
 							onClick={() => copyToClipboard(file.publicUrl || "")}
-							className="mt-6 bg-gray-500 hover:bg-gray-900 text-white px-3 py-2 text-sm w-full rounded-lg transition-all"
+							className="mt-6 bg-gray-500 hover:bg-gray-900 text-white px-3 py-2 text-sm w-full rounded-lg transition-all cursor-pointer"
 						>
 							Copier l'URL
 						</button>
 
 						<button
 							onClick={() => deleteImage(file.name)}
-							className="mt-6 bg-red-500 text-white w-full px-3 py-2 rounded-lg text-sm hover:bg-red-600 transition-all"
+							className="mt-6 bg-red-500 text-white w-full px-3 py-2 rounded-lg text-sm hover:bg-red-600 transition-all cursor-pointer"
 						>
 							Supprimer l'image
 						</button>
