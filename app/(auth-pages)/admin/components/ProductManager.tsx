@@ -36,14 +36,15 @@ interface ProductFormValues {
 
 const typeOptions = [
 	{ value: "", label: "Pâtisseries non affichées" },
-	{ value: "hero", label: "La pâtisserie en haut de page" },
-	{ value: "star", label: "Les pâtisseries du moment" },
-	{ value: "all", label: "Toutes les autres pâtisseries" },
+	{ value: "hero", label: "La pâtisserie en haut de page (hero)" },
+	{ value: "star", label: "Les pâtisseries du moment (star)" },
+	{ value: "all", label: "Toutes les autres pâtisseries (all)" },
 ];
 
 const ProductSchema = Yup.object().shape({
 	title: Yup.string().required("Le titre est requis"),
-	type: Yup.string().required("Le type est requis"),
+	// type: Yup.string().required("Le type est requis"),
+	// type: Yup.string().min(0).required("Le type est requis"),
 	price: Yup.string().required("Le prix est requis"),
 	description: Yup.string().required("La description est requise"),
 	ingredients: Yup.string().required("Les ingrédients sont requis"),
@@ -123,6 +124,8 @@ const ProductManager = () => {
 		const productToAdd = {
 			...formValues,
 			price: parseFloat(formValues.price),
+			flavors: formValues.flavors || "",
+			allergens: formValues.allergens || "",
 		};
 
 		const { id, ...productWithoutId } = productToAdd;
@@ -168,6 +171,8 @@ const ProductManager = () => {
 		const productToUpdate = {
 			...formValues,
 			price: parseFloat(formValues.price),
+			flavors: formValues.flavors || "",
+			allergens: formValues.allergens || "",
 		};
 
 		const { error } = await supabase
@@ -242,9 +247,9 @@ const ProductManager = () => {
 											type: editingProduct.type,
 											price: editingProduct.price.toString(), // Convertir number en string
 											description: editingProduct.description,
-											flavors: editingProduct.flavors,
+											flavors: editingProduct.flavors || "",
 											ingredients: editingProduct.ingredients,
-											allergens: editingProduct.allergens,
+											allergens: editingProduct.allergens || "",
 											image: editingProduct.image,
 										}
 									: {
@@ -338,6 +343,7 @@ const ProductManager = () => {
 											as="textarea"
 											name="description"
 											placeholder="Description"
+											rows={2}
 											className="w-full p-4 border focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 transition-all"
 										/>
 										{errors.description && touched.description && (
@@ -352,6 +358,7 @@ const ProductManager = () => {
 											as="textarea"
 											name="flavors"
 											placeholder="Parfums"
+											rows={4}
 											className="w-full p-4 border focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 transition-all"
 										/>
 										{errors.flavors && touched.flavors && (
@@ -366,6 +373,7 @@ const ProductManager = () => {
 											as="textarea"
 											name="ingredients"
 											placeholder="Ingrédients"
+											rows={6}
 											className="w-full p-4 border focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 transition-all"
 										/>
 										{errors.ingredients && touched.ingredients && (
@@ -380,6 +388,7 @@ const ProductManager = () => {
 											as="textarea"
 											name="allergens"
 											placeholder="Allergènes"
+											rows={4}
 											className="w-full p-4 border focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 transition-all"
 										/>
 										{errors.allergens && touched.allergens && (

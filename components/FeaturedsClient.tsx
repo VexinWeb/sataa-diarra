@@ -36,8 +36,16 @@ const FeaturedsClient: FC<FeaturedsClientProps> = ({ products }) => {
 						Les douceurs du moment
 					</p>
 				</div>
-				<div className="flex flex-col xl:flex-row justify-center items-center gap-6">
+				{/* <div className="flex flex-col xl:flex-row justify-center items-center gap-6"> */}
+				<div className="flex flex-col xl:flex-row justify-around items-center gap-6">
 					{products.map((item) => (
+						// <div
+						// 	key={item.id}
+						// 	className="p-4 border rounded-3xl shadow-sm flex justify-between bg-stone-100/90 w-full sm:w-80 md:w-96 cursor-pointer"
+						// 	onClick={() =>
+						// 		setSelectedCard(selectedCard === item.id ? null : item.id)
+						// 	}
+						// >
 						<div
 							key={item.id}
 							className="p-4 border rounded-3xl shadow-sm flex justify-between bg-stone-100/90 w-full sm:w-80 md:w-96 cursor-pointer"
@@ -86,8 +94,8 @@ const FeaturedsClient: FC<FeaturedsClientProps> = ({ products }) => {
 									width={200}
 									height={200}
 									style={{
-										height: "160px",
-										width: "160px",
+										height: "150px",
+										width: "150px",
 										objectFit: "cover",
 									}}
 								/>

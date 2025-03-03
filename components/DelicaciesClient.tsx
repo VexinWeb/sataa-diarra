@@ -88,14 +88,16 @@ const DelicaciesClient: FC<DelicaciesClientProps> = ({ products }) => {
 												<span className="lowercase">{item.flavors}</span>
 											</p>
 										)}
-										<p className="text-xs text-sataa/80 pb-1 animate-fadeIn">
+										<p className="text-xs text-sataa/80 pb-2 animate-fadeIn">
 											<strong>Ingrédients : </strong>
 											{item.ingredients}
 										</p>
-										<p className="text-xs text-sataa/80 animate-fadeIn">
-											<strong>Allergènes : </strong>
-											{item.allergens}
-										</p>
+										{item.allergens && (
+											<p className="text-xs text-sataa/80 animate-fadeIn">
+												<strong>Allergènes : </strong>
+												{item.allergens}
+											</p>
+										)}
 									</div>
 								)}
 							</div>

@@ -71,7 +71,8 @@ const ImageManager = () => {
 
 		return await supabase.storage.from("images").upload(uploadFileName, file, {
 			cacheControl: "3600",
-			upsert: false,
+			// Modified to allow overwriting existing files
+			upsert: true,
 		});
 	};
 
