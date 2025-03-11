@@ -198,6 +198,8 @@ const ContactForm: FC = () => {
 									type="text"
 									placeholder="Votre nom"
 									className="p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 transition-all"
+									required
+									aria-required="true"
 								/>
 								{errors.name && touched.name && (
 									<div className="text-red-500 text-sm  pl-4">
@@ -211,6 +213,8 @@ const ContactForm: FC = () => {
 									type="email"
 									placeholder="Votre email"
 									className="p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 transition-all"
+									required
+									aria-required="true"
 								/>
 								{errors.email && touched.email && (
 									<div className="text-red-500 text-sm pl-4">
@@ -224,6 +228,8 @@ const ContactForm: FC = () => {
 									type="tel"
 									placeholder="Votre téléphone (facultatif)"
 									className="p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 transition-all"
+									required
+									aria-required="true"
 								/>
 								{errors.phone && touched.phone && (
 									<div className="text-red-500 text-sm">{errors.phone}</div>
@@ -243,6 +249,8 @@ const ContactForm: FC = () => {
 										}}
 										onBlur={() => setFieldTouched("subject", true)}
 										className="rounded-xl"
+										required
+										aria-required="true"
 									/>
 								)}
 								{errors.subject && touched.subject && (
@@ -256,6 +264,8 @@ const ContactForm: FC = () => {
 									placeholder="Votre message"
 									rows={4}
 									className="p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 transition-all"
+									required
+									aria-required="true"
 								/>
 								{errors.message && touched.message && (
 									<div className="text-red-500 text-sm pl-4">

@@ -46,7 +46,7 @@ const FeaturedsClient: FC<FeaturedsClientProps> = ({ products }) => {
 						// 		setSelectedCard(selectedCard === item.id ? null : item.id)
 						// 	}
 						// >
-						<div
+						<article
 							key={item.id}
 							className="p-4 border rounded-3xl shadow-sm flex justify-between bg-stone-100/90 w-full sm:w-80 md:w-96 cursor-pointer"
 							onClick={() =>
@@ -105,7 +105,7 @@ const FeaturedsClient: FC<FeaturedsClientProps> = ({ products }) => {
 									</div>
 								)}
 							</div>
-						</div>
+						</article>
 					))}
 				</div>
 			</div>

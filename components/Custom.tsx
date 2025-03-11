@@ -13,6 +13,14 @@ const Custom: FC = () => {
 			<div
 				className="bg-stone-100/100 text-center cursor-pointer p-6 border rounded-3xl shadow-sm"
 				onClick={() => setShowAll((prev) => !prev)}
+				tabIndex={0}
+				role="button"
+				aria-expanded={showAll}
+				onKeyDown={(e) => {
+					if (e.key === "Enter" || e.key === " ") {
+						setShowAll((prev) => !prev);
+					}
+				}}
 			>
 				<h2 className="text-2xl text-stone-600/90 font-bold">
 					{showAll ? "Pour une envie particulière" : "Une envie particulière ?"}
