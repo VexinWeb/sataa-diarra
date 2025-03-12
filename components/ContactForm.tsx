@@ -107,10 +107,10 @@ const ContactForm: FC = () => {
 		setSubmitStatus(null);
 
 		try {
-			// Remplacez ces valeurs par vos IDs EmailJS
-			const serviceId = "service_9yuhwis";
-			const templateId = "template_0asojaa";
-			const publicKey = "dyqOGcZNNcNTQ_ko8";
+			// Remplacer ces valeurs par vos IDs EmailJS
+			const serviceId = "service_apb1rlh";
+			const templateId = "template_tp8jo0m";
+			const publicKey = "kiZC_9wQV30WC1DKI";
 
 			// Préparer les données pour l'envoi
 			// Convertir la valeur numérique du sujet en texte lisible
