@@ -228,8 +228,6 @@ const ContactForm: FC = () => {
 									type="tel"
 									placeholder="Votre téléphone (facultatif)"
 									className="p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 transition-all"
-									required
-									aria-required="true"
 								/>
 								{errors.phone && touched.phone && (
 									<div className="text-red-500 text-sm">{errors.phone}</div>
