@@ -22,6 +22,8 @@ export default function RootLayout({
 			<Meta />
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+				// Hide the hydration warning but keep the hydration warning
+				suppressHydrationWarning={true}
 			>
 				{children}
 			</body>

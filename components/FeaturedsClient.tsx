@@ -36,16 +36,24 @@ const FeaturedsClient: FC<FeaturedsClientProps> = ({ products }) => {
 						Les douceurs du moment
 					</p>
 				</div>
-				<div className="flex flex-col xl:flex-row justify-center items-center gap-6">
+				{/* <div className="flex flex-col xl:flex-row justify-center items-center gap-6"> */}
+				<div className="flex flex-col xl:flex-row justify-around items-center gap-6">
 					{products.map((item) => (
-						<div
+						// <div
+						// 	key={item.id}
+						// 	className="p-4 border rounded-3xl shadow-sm flex justify-between bg-stone-100/90 w-full sm:w-80 md:w-96 cursor-pointer"
+						// 	onClick={() =>
+						// 		setSelectedCard(selectedCard === item.id ? null : item.id)
+						// 	}
+						// >
+						<article
 							key={item.id}
 							className="p-4 border rounded-3xl shadow-sm flex justify-between bg-stone-100/90 w-full sm:w-80 md:w-96 cursor-pointer"
 							onClick={() =>
 								setSelectedCard(selectedCard === item.id ? null : item.id)
 							}
 						>
-							<div className="flex flex-col justify-center w-full">
+							<div className="flex flex-col justify-center w-full px-2">
 								<h3 className="text-lg font-semibold text-sataa pb-1">
 									{item.title}
 								</h3>
@@ -79,13 +87,17 @@ const FeaturedsClient: FC<FeaturedsClientProps> = ({ products }) => {
 									</div>
 								)}
 							</div>
-
-							<div className="relative flex items-center pl-4">
+							<div className="relative flex items-center w-full">
 								<Image
 									src={item.image}
 									alt="Featured item"
-									width={150}
-									height={150}
+									width={200}
+									height={200}
+									style={{
+										height: "150px",
+										width: "150px",
+										objectFit: "cover",
+									}}
 								/>
 								{selectedCard === item.id && (
 									<div className="text-xs text-stone-600 absolute top-0 right-0 bg-white/90  shadow-sm p-3 h-10 w-10 rounded-full flex items-center justify-center">
@@ -93,7 +105,7 @@ const FeaturedsClient: FC<FeaturedsClientProps> = ({ products }) => {
 									</div>
 								)}
 							</div>
-						</div>
+						</article>
 					))}
 				</div>
 			</div>

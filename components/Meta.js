@@ -40,8 +40,8 @@ const Meta = ({ title, keywords, description }) => {
 Meta.defaultProps = {
 	title: "La Pâtisserie de Sataa Diarra | Pâtisserie artisanale dans le Vexin",
 	keywords:
-		"pâtisserie artisanale, gâteaux sur mesure, pâtissière à domicile, Parnes, Vexin, Gisors, gâteaux personnalisés, desserts événementiels, pâtisserie maison, gâteaux d'anniversaire, wedding cake, Oise",
+		"pâtisserie artisanale, gâteaux sur mesure, pâtissière à domicile, Parnes, Vexin, Gisors, Magny-en-Vexin, Chaumont-en-Vexin, gâteaux personnalisés, desserts événementiels, pâtisserie maison, gâteaux d'anniversaire, wedding cake, Oise",
 	description:
-		"Artisan pâtissière à Parnes (60240), Sataa Diarra crée des pâtisseries artisanales sur mesure pour vos événements dans le Vexin. Spécialisée dans les gâteaux personnalisés, wedding cakes et desserts d'exception. Livraison possible sur Gisors, Chaumont-en-Vexin et environs.",
+		"Artisan pâtissière à Parnes (60240), Sataa Diarra crée des pâtisseries artisanales sur mesure pour vos événements dans le Vexin. Spécialisée dans les gâteaux personnalisés, wedding cakes et desserts d'exception. Livraison possible à 30 km autour de Parnes.",
 };
 export default Meta;

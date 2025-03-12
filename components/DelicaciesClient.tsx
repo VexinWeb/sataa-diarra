@@ -24,10 +24,18 @@ const DelicaciesClient: FC<DelicaciesClientProps> = ({ products }) => {
 	const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
 	return (
-		<section className="px-4 py-6 mt-12 max-w-[1800px] mx-auto">
+		<section className="py-8 px-4 max-w-[1800px] mx-auto">
 			<div
-				className="bg-stone-100/100 text-center cursor-pointer p-6 border rounded-3xl shadow-sm max-w-lg mx-auto"
+				className="bg-stone-100/100 text-center cursor-pointer p-6 border rounded-3xl shadow-sm"
 				onClick={() => setShowCards((prev) => !prev)}
+				tabIndex={0}
+				role="button"
+				aria-expanded={showCards		}
+				onKeyDown={(e) => {
+					if (e.key === "Enter" || e.key === " ") {
+						setShowCards((prev) => !prev);
+					}
+				}}
 			>
 				<h2 className="text-2xl text-stone-600/90 font-bold">
 					{showCards ? "Moins de pâtisseries" : "Plus de pâtisseries"}
@@ -40,17 +48,25 @@ const DelicaciesClient: FC<DelicaciesClientProps> = ({ products }) => {
 			{showCards && (
 				<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 py-6">
 					{products.map((item) => (
-						<div
+						<article
 							key={item.id}
 							className="p-4 border rounded-3xl shadow-sm flex flex-col bg-stone-100/100 cursor-pointer animate-fadeIn"
 							onClick={() =>
 								setSelectedCard(selectedCard === item.id ? null : item.id)
 							}
+							tabIndex={0}
+							role="button"
+							aria-expanded={selectedCard === item.id ? "true" : "false"}
+							onKeyDown={(e) => {
+								if (e.key === "Enter" || e.key === " ") {
+									setSelectedCard(selectedCard === item.id ? null : item.id);
+								}
+							}}
 						>
 							<div className="relative flex justify-center mb-4">
 								<Image
 									src={item.image}
-									alt="Featured item"
+									alt={`Pâtisserie : ${item.title}`} // Alt plus descriptif
 									width={150}
 									height={150}
 								/>
@@ -88,18 +104,20 @@ const DelicaciesClient: FC<DelicaciesClientProps> = ({ products }) => {
 												<span className="lowercase">{item.flavors}</span>
 											</p>
 										)}
-										<p className="text-xs text-sataa/80 pb-1 animate-fadeIn">
+										<p className="text-xs text-sataa/80 pb-2 animate-fadeIn">
 											<strong>Ingrédients : </strong>
 											{item.ingredients}
 										</p>
-										<p className="text-xs text-sataa/80 animate-fadeIn">
-											<strong>Allergènes : </strong>
-											{item.allergens}
-										</p>
+										{item.allergens && (
+											<p className="text-xs text-sataa/80 animate-fadeIn">
+												<strong>Allergènes : </strong>
+												{item.allergens}
+											</p>
+										)}
 									</div>
 								)}
 							</div>
-						</div>
+						</article>
 					))}
 				</div>
 			)}

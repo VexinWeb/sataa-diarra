@@ -35,54 +35,57 @@ const Navbar: FC = () => {
 	}, []);
 
 	return (
-		<nav className="flex p-4 h-32 bg-stone-200 items-center max-w-[1800px] mx-auto">
-			{/* Button to go to top of page */}
-			{showScrollToTop && (
-				<button
-					className="fixed bottom-24 right-4 p-1 text-black bg-white/50 rounded-full z-50"
-					onClick={scrollToTop}
-					aria-label="Scroll to Top"
-				>
-					<ArrowUpwardIcon style={{ fontSize: "2rem" }} />
-				</button>
-			)}
-			<a
-				className="flex items-center justify-center relative w-48 h-full"
-				href="https://www.instagram.com/sataa_diarra?igsh=MXQwMzgwOWFmcjBiaw%3D%3D"
-				target="_blank"
-				rel="noopener noreferrer"
-			>
-				<Image
-					className="contrast-150"
-					src="/logo/logo.png"
-					alt="Logo"
-					width={200}
-					height={100}
-				/>
-			</a>
-			<div className="flex justify-end items-center gap-5 ml-auto">
+		<header>
+			<nav className="flex p-4 h-32 bg-stone-200 items-center max-w-[1800px] mx-auto">
+				{/* Button to go to top of page */}
+				{showScrollToTop && (
+					<button
+						className="fixed bottom-24 right-4 p-1 text-black bg-white/50 rounded-full z-50"
+						onClick={scrollToTop}
+						aria-label="Scroll to Top"
+						role="button"
+					>
+						<ArrowUpwardIcon style={{ fontSize: "2rem" }} />
+					</button>
+				)}
 				<a
-					className="h-5 w-5 text-stone-500 hover:text-stone-800"
-					href="#FeaturedCards"
-				>
-					<CakeIcon />
-				</a>
-				<a
-					className="h-5 w-5 text-stone-500 hover:text-stone-800"
-					href="#ContactForm"
-				>
-					<GmailIcon />
-				</a>
-				<a
-					className="h-5 w-5 text-stone-500 hover:text-stone-800"
+					className="flex items-center justify-center relative w-48 h-full"
 					href="https://www.instagram.com/sataa_diarra?igsh=MXQwMzgwOWFmcjBiaw%3D%3D"
 					target="_blank"
 					rel="noopener noreferrer"
 				>
-					<InstagramIcon />
+					<Image
+						className="contrast-150"
+						src="/logo/logo.png"
+						alt="Logo"
+						width={200}
+						height={100}
+					/>
 				</a>
-			</div>
-		</nav>
+				<div className="flex justify-end items-center gap-5 ml-auto">
+					<a
+						className="h-5 w-5 text-stone-500 hover:text-stone-800"
+						href="#FeaturedCards"
+					>
+						<CakeIcon />
+					</a>
+					<a
+						className="h-5 w-5 text-stone-500 hover:text-stone-800"
+						href="#ContactForm"
+					>
+						<GmailIcon />
+					</a>
+					<a
+						className="h-5 w-5 text-stone-500 hover:text-stone-800"
+						href="https://www.instagram.com/sataa_diarra?igsh=MXQwMzgwOWFmcjBiaw%3D%3D"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						<InstagramIcon />
+					</a>
+				</div>
+			</nav>
+		</header>
 	);
 };
 

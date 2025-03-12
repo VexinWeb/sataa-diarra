@@ -5,14 +5,29 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { FileObject } from "@supabase/storage-js";
 import { ChangeEvent } from "react";
+import { Formik, Form, Field, FormikHelpers } from "formik";
+import * as Yup from "yup";
 
 interface ImageFile extends FileObject {
 	publicUrl?: string;
 }
 
+// Schéma de validation pour le nom de fichier
+const FileNameSchema = Yup.object().shape({
+	fileName: Yup.string()
+		.required("Le nom du fichier est obligatoire")
+		.matches(
+			/^[a-zA-Z0-9_-]+$/,
+			"Le nom ne doit contenir que des lettres, chiffres, tirets et underscores"
+		),
+});
+
+interface FileNameFormValues {
+	fileName: string;
+}
+
 const ImageManager = () => {
 	const [files, setFiles] = useState<ImageFile[]>([]);
-	const [fileName, setFileName] = useState<string>("");
 	const [uploading, setUploading] = useState(false);
 	const [currentImageUrl, setCurrentImageUrl] = useState<string>("");
 
@@ -40,7 +55,7 @@ const ImageManager = () => {
 		}
 	};
 
-	const validateFileName = () => {
+	const validateFileName = (fileName: string) => {
 		if (!fileName.trim()) {
 			alert("Le nom du fichier est obligatoire");
 			return false;
@@ -48,27 +63,28 @@ const ImageManager = () => {
 		return true;
 	};
 
-	const uploadImage = async (file: File | Blob) => {
-		if (!validateFileName()) return;
+	const uploadImage = async (file: File | Blob, fileName: string) => {
+		if (!validateFileName(fileName)) return;
 
 		const extension = file instanceof File ? file.name.split(".").pop() : "jpg";
 		const uploadFileName = `${fileName}.${extension}`;
 
 		return await supabase.storage.from("images").upload(uploadFileName, file, {
 			cacheControl: "3600",
-			upsert: false,
+			// Modified to allow overwriting existing files
+			upsert: true,
 		});
 	};
 
 	const validateImageFormat = (file: File) => {
 		const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
-		const maxSize = 2 * 1024 * 1024; // 1MB
+		const maxSize = 2 * 1024 * 1024; // 2MB
 
 		if (!validTypes.includes(file.type)) {
 			throw new Error("Format invalide. Utilisez JPG, PNG ou WEBP");
 		}
 		if (file.size > maxSize) {
-			throw new Error("Image trop volumineuse. Maximum 1MB");
+			throw new Error("Image trop volumineuse. Maximum 2MB");
 		}
 	};
 
@@ -82,8 +98,8 @@ const ImageManager = () => {
 				const ctx = canvas.getContext("2d");
 
 				// Dimensions maximales
-				const maxWidth = 1000;
-				const maxHeight = 1000;
+				const maxWidth = 800;
+				const maxHeight = 800;
 
 				let width = img.width;
 				let height = img.height;
@@ -101,29 +117,40 @@ const ImageManager = () => {
 				canvas.toBlob(
 					(blob) => {
 						if (blob) {
-							resolve(blob);
+							// On compare les tailles et on garde la plus petite
+							if (blob.size > file.size) {
+								resolve(file);
+							} else {
+								resolve(blob);
+							}
 						} else {
 							reject(new Error("Échec de l'optimisation"));
 						}
 					},
-					file.type, // Conserve le format d'origine
-					0.9
+					"image/png",
+					0.7
 				);
 			};
 		});
 	};
 
-	const handleImageUpload = async (event: ChangeEvent<HTMLInputElement>) => {
+	const handleImageUpload = async (
+		event: ChangeEvent<HTMLInputElement>,
+		fileName: string
+	) => {
 		const file = event.target.files?.[0];
 		if (!file) return;
+
+		// Ajout des logs
+		console.log("Détails de l'image:", {
+			taille: file.size,
+			type: file.type,
+			nom: file.name,
+		});
 		console.log("Fichier sélectionné:", file);
 
-		if (!fileName.trim()) {
-			alert("Le nom du fichier est obligatoire");
-			return;
-		}
-
 		try {
+			setUploading(true);
 			console.log("Début validation format");
 			validateImageFormat(file);
 
@@ -144,9 +171,15 @@ const ImageManager = () => {
 
 			fetchImages();
 			event.target.value = "";
-			setFileName("");
 		} catch (error) {
 			console.error("Erreur détaillée:", error);
+			alert(
+				error instanceof Error
+					? error.message
+					: "Une erreur est survenue lors de l'upload"
+			);
+		} finally {
+			setUploading(false);
 		}
 	};
 
@@ -174,6 +207,7 @@ const ImageManager = () => {
 
 	const copyToClipboard = (text: string) => {
 		navigator.clipboard.writeText(text);
+		alert("URL copiée dans le presse-papier");
 	};
 
 	useEffect(() => {
@@ -186,25 +220,56 @@ const ImageManager = () => {
 				Gestion des images
 			</h2>
 
-			<div className="mb-8 flex flex-col sm:flex-row gap-4 items-center justify-center">
-				<input
-					type="text"
-					placeholder="Nom du fichier image"
-					value={fileName}
-					onChange={(e) => setFileName(e.target.value)}
-					className="p-2 border rounded-lg w-full sm:w-96"
-				/>
-				<label className="bg-gray-600 hover:bg-gray-900 text-white text-center font-bold py-2 px-4 rounded-lg cursor-pointer w-full sm:w-96">
-					{uploading ? "Ajout en cours..." : "Ajouter une image"}
-					<input
-						type="file"
-						className="hidden"
-						accept="image/*"
-						onChange={handleImageUpload}
-						disabled={uploading}
-					/>
-				</label>
-			</div>
+			{/* Remplacer le formulaire actuel par le formulaire Formik */}
+			<Formik
+				initialValues={{ fileName: "" }}
+				validationSchema={FileNameSchema}
+				onSubmit={(
+					values: FileNameFormValues,
+					{ resetForm }: FormikHelpers<FileNameFormValues>
+				) => {
+					// L'action est gérée par l'événement onChange de l'input file
+				}}
+			>
+				{({ values, errors, touched, handleBlur, resetForm }: any) => (
+					<Form className="mb-8 flex flex-col gap-4 items-center justify-center">
+						<div className="w-full sm:w-96">
+							<Field
+								name="fileName"
+								type="text"
+								placeholder="Nom du fichier image"
+								className="p-4 border focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 transition-all w-full"
+							/>
+							{errors.fileName && touched.fileName && (
+								<div className="text-red-500 text-sm mt-1 pl-4">
+									{errors.fileName}
+								</div>
+							)}
+						</div>
+
+						<label className="bg-gray-600 hover:bg-gray-900 text-white text-center font-bold py-3 px-4 cursor-pointer w-full sm:w-96 transition-all">
+							{uploading ? "Ajout en cours..." : "Ajouter une image"}
+							<input
+								type="file"
+								className="hidden"
+								accept="image/*"
+								onChange={(e) => {
+									if (values.fileName.trim()) {
+										handleImageUpload(e, values.fileName).then(() => {
+											// Réinitialiser le formulaire après un upload réussi
+											resetForm();
+										});
+									} else {
+										// La validation Formik s'en occupera
+										handleBlur({ target: { name: "fileName" } });
+									}
+								}}
+								disabled={uploading}
+							/>
+						</label>
+					</Form>
+				)}
+			</Formik>
 
 			<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
 				{files.map((file) => (
@@ -225,17 +290,19 @@ const ImageManager = () => {
 							className="rounded-lg w-full"
 						/>
 						<p className="mt-2 text-sm text-stone-600">{file.name}</p>
-						<p
-							className="mt-1 text-xs text-stone-500 break-all cursor-pointer hover:text-stone-700"
+
+						<button
 							onClick={() => copyToClipboard(file.publicUrl || "")}
+							className="mt-6 bg-gray-500 hover:bg-gray-900 text-white px-3 py-2 text-sm w-full rounded-lg transition-all cursor-pointer"
 						>
-							{file.publicUrl}
-						</p>
+							Copier l'URL
+						</button>
+
 						<button
 							onClick={() => deleteImage(file.name)}
-							className="mt-6 bg-red-500 text-white w-full px-3 py-2 rounded-lg text-sm hover:bg-red-600"
+							className="mt-6 bg-red-500 text-white w-full px-3 py-2 rounded-lg text-sm hover:bg-red-600 transition-all cursor-pointer"
 						>
-							Supprimer
+							Supprimer l'image
 						</button>
 					</div>
 				))}

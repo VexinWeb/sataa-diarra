@@ -22,13 +22,20 @@ const HeroClient: FC<HeroClientProps> = ({ products }) => {
 		<section className="flex flex-col justify-center relative py-12 h-[calc(100vh-128px)] bg-stone-300/10 max-w-[1800px] mx-auto">
 			{products.map((item) => (
 				// <div className="mx-auto" key={item.id}>
-				<div className="max-w-[80vw] mx-auto" key={item.id}>
+				// <div className="max-w-[80vw] mx-auto" key={item.id}>
+				<div className="max-w-[350px] md:max-w-[500px] mx-auto" key={item.id}>
 					<Image
 						// src="/images/hero.png"
 						src={item.image}
 						alt="Pâtisserie"
-						width={400}
-						height={400}
+						width={500}
+						height={500}
+						priority={true}
+						style={{
+							width: "500px",
+							height: "auto",
+							objectFit: "cover",
+						}}
 					/>
 				</div>
 			))}

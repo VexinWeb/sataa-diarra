@@ -4,10 +4,10 @@ import Image from "next/image";
 
 const AdminNavbar = () => {
 	return (
-		<div className="bg-gray-600 flex flex-col items-center justify-center py-12">
+		<header className="bg-gray-600 flex flex-col items-center justify-center py-12">
 			<a
 				className="flex items-center justify-center relative w-48 h-full"
-				href="https://www.instagram.com/sataa_diarra?igsh=MXQwMzgwOWFmcjBiaw%3D%3D"
+				href="https://www.sataadiarra.fr/"
 				target="_blank"
 				rel="noopener noreferrer"
 			>
@@ -23,7 +23,7 @@ const AdminNavbar = () => {
 				Interface administratrice
 			</h1>
 			<UserInfo />
-		</div>
+		</header>
 	);
 };
 
