@@ -58,7 +58,7 @@ const FeaturedsClient: FC<FeaturedsClientProps> = ({ products }) => {
 									{item.title}
 								</h3>
 
-								<p className="text-md md:text-base text-sataa pb-2">
+								<p className="text-sm md:text-base text-sataa pb-2">
 									{item.description}
 								</p>
 								{selectedCard === item.id && (
