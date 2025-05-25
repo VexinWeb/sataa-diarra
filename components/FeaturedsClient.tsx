@@ -36,24 +36,18 @@ const FeaturedsClient: FC<FeaturedsClientProps> = ({ products }) => {
 						Les douceurs du moment
 					</p>
 				</div>
-				{/* <div className="flex flex-col xl:flex-row justify-center items-center gap-6"> */}
-				<div className="flex flex-col xl:flex-row justify-around items-center gap-6">
+				<div className="grid grid-cols-1 xl:grid-cols-3 justify-items-center gap-6">
 					{products.map((item) => (
-						// <div
-						// 	key={item.id}
-						// 	className="p-4 border rounded-3xl shadow-sm flex justify-between bg-stone-100/90 w-full sm:w-80 md:w-96 cursor-pointer"
-						// 	onClick={() =>
-						// 		setSelectedCard(selectedCard === item.id ? null : item.id)
-						// 	}
-						// >
 						<article
 							key={item.id}
-							className="p-4 border rounded-3xl shadow-sm flex justify-between bg-stone-100/90 w-full sm:w-80 md:w-96 cursor-pointer"
+							className={`p-4 border rounded-3xl shadow-sm flex justify-between w-full sm:w-80 md:w-96 cursor-pointer h-full transition-colors duration-300 ${
+								selectedCard === item.id ? "bg-white/95" : "bg-stone-100/90"
+							}`}
 							onClick={() =>
 								setSelectedCard(selectedCard === item.id ? null : item.id)
 							}
 						>
-							<div className="flex flex-col justify-center w-full px-2">
+							<div className="flex flex-col justify-start w-full px-2">
 								<h3 className="text-lg font-semibold text-sataa pb-1">
 									{item.title}
 								</h3>
@@ -100,7 +94,7 @@ const FeaturedsClient: FC<FeaturedsClientProps> = ({ products }) => {
 									}}
 								/>
 								{selectedCard === item.id && (
-									<div className="text-xs text-stone-600 absolute top-0 right-0 bg-white/90  shadow-sm p-3 h-10 w-10 rounded-full flex items-center justify-center">
+									<div className="text-xs text-stone-600 absolute top-0 right-0 bg-white/90  shadow-xl p-3 h-10 w-10 rounded-full flex items-center justify-center">
 										{item.price}€
 									</div>
 								)}
