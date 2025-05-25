@@ -30,7 +30,7 @@ const DelicaciesClient: FC<DelicaciesClientProps> = ({ products }) => {
 				onClick={() => setShowCards((prev) => !prev)}
 				tabIndex={0}
 				role="button"
-				aria-expanded={showCards		}
+				aria-expanded={showCards}
 				onKeyDown={(e) => {
 					if (e.key === "Enter" || e.key === " ") {
 						setShowCards((prev) => !prev);
@@ -50,7 +50,9 @@ const DelicaciesClient: FC<DelicaciesClientProps> = ({ products }) => {
 					{products.map((item) => (
 						<article
 							key={item.id}
-							className="p-4 border rounded-3xl shadow-sm flex flex-col bg-stone-100/100 cursor-pointer animate-fadeIn"
+							className={`p-4 border rounded-3xl shadow-sm flex flex-col cursor-pointer animate-fadeIn transition-colors duration-300 ${
+								selectedCard === item.id ? "bg-white/95" : "bg-stone-100/100"
+							}`}
 							onClick={() =>
 								setSelectedCard(selectedCard === item.id ? null : item.id)
 							}
@@ -72,7 +74,7 @@ const DelicaciesClient: FC<DelicaciesClientProps> = ({ products }) => {
 								/>
 
 								{selectedCard === item.id && (
-									<div className="text-xs text-stone-600 absolute top-0 right-0 bg-white/90  shadow-sm p-3 h-10 w-10 rounded-full flex items-center justify-center">
+									<div className="text-xs text-stone-600 absolute top-0 right-0 bg-white/90 shadow-xl p-3 h-10 w-10 rounded-full flex items-center justify-center">
 										{item.price}€
 									</div>
 								)}
