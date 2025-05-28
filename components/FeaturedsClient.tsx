@@ -85,14 +85,12 @@ const FeaturedsClient: FC<FeaturedsClientProps> = ({ products }) => {
 								<Image
 									src={item.image}
 									alt="Featured item"
-									width={200}
-									height={200}
-									style={{
-										height: "150px",
-										width: "150px",
-										objectFit: "cover",
-									}}
+									width={150}
+									height={150}
+									className="h-[150px] w-[150px] object-cover"
+									// Supprimez complètement la prop style
 								/>
+
 								{selectedCard === item.id && (
 									<div className="text-xs text-stone-600 absolute top-0 right-0 bg-white/90  shadow-xl p-3 h-10 w-10 rounded-full flex items-center justify-center">
 										{item.price}€

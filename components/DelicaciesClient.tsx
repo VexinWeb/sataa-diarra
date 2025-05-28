@@ -68,9 +68,11 @@ const DelicaciesClient: FC<DelicaciesClientProps> = ({ products }) => {
 							<div className="relative flex justify-center mb-4">
 								<Image
 									src={item.image}
-									alt={`Pâtisserie : ${item.title}`} // Alt plus descriptif
+									alt="Featured item"
 									width={150}
 									height={150}
+									className="h-[150px] w-[150px] object-cover"
+									// onLoad={() => console.log("Image loaded:", item.image)}
 								/>
 
 								{selectedCard === item.id && (
